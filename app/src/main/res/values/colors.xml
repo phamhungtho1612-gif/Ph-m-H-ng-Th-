@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="studio_dark_bg">#FF111014</color>
+    <color name="studio_cream_bg">#FFFAF7F2</color>
+    <color name="photobooth_coral">#FFFF5C77</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+</resources>

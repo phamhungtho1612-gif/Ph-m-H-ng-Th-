@@ -1,0 +1,304 @@
+<resources>
+    <string name="app_name">Friends</string>
+
+    <!-- Navigation & Theme -->
+    <string name="nav_booth">Phòng chụp</string>
+    <string name="nav_circle">Ảnh bạn bè</string>
+    <string name="nav_messages">Tin nhắn</string>
+    <string name="nav_profile">Cá nhân</string>
+    <string name="swipe_up_circle_hint">Vuốt lên: Ảnh bạn bè</string>
+    <string name="swipe_right_messages_hint">Tin nhắn</string>
+    <string name="swipe_left_messages_hint">Tin nhắn</string>
+    <string name="swipe_right_profile_hint">Cá nhân</string>
+    <string name="swipe_down_booth_hint">Phòng chụp</string>
+    <string name="theme_toggle_desc">Chuyển chế độ sáng hoặc tối</string>
+    <string name="theme_light">Sáng (Trắng &amp; Vàng)</string>
+    <string name="theme_dark">Tối (Đen &amp; Vàng)</string>
+    <string name="theme_system">Theo hệ thống</string>
+
+    <!-- Settings, App Icon & Widget -->
+    <string name="settings_title">Cài đặt</string>
+    <string name="settings_desc">Phòng chụp, biểu tượng &amp; giao diện</string>
+    <string name="settings_theme_section">Chế độ giao diện</string>
+    <string name="settings_countdown_section">Thời gian đếm ngược</string>
+    <string name="settings_countdown_desc">Chọn từ 0 giây (chụp ngay) đến 10 giây trước mỗi tấm ảnh.</string>
+    <string name="settings_countdown_instant">0 giây (Chụp ngay)</string>
+    <string name="settings_countdown_value">%1$d giây</string>
+    <string name="settings_app_icon_section">Biểu tượng ứng dụng</string>
+    <string name="settings_app_icon_desc">Chọn phong cách biểu tượng Friends trên màn hình chính.</string>
+    <string name="icon_variant_yellow">Vàng Friends</string>
+    <string name="icon_variant_dark">Đen tối giản</string>
+    <string name="icon_variant_pink">Hồng pastel</string>
+    <string name="icon_variant_classic">Trắng cổ điển</string>
+    <string name="settings_widget_section">Widget màn hình chính</string>
+    <string name="settings_widget_desc">Xem ảnh mới nhất từ bạn bè ngay ngoài màn hình chính.</string>
+    <string name="settings_add_widget_btn">Thêm Widget ra màn hình chính</string>
+    <string name="widget_pin_requested">Đã mở hộp thoại thêm Widget Friends ra màn hình chính!</string>
+    <string name="widget_pin_unsupported">Nhấn giữ màn hình chính → Widget → chọn Friends để thêm.</string>
+    <string name="widget_description">Hiển thị khoảnh khắc ảnh mới nhất từ bạn bè</string>
+    <string name="widget_photo_desc">Ảnh mới nhất từ bạn bè</string>
+    <string name="widget_empty_prompt">Chưa có ảnh mới • Nhấn để chụp &amp; gửi ngay</string>
+    <string name="close">Đóng</string>
+
+    <!-- Auth Screen -->
+    <string name="auth_title">Friends</string>
+    <string name="auth_subtitle">Chụp ảnh lấy liền 1 hoặc 4 tấm và chia sẻ ngay khoảnh khắc với bạn bè.</string>
+    <string name="sign_in_with_google">Đăng nhập với Google</string>
+    <string name="signing_in">Đang đăng nhập…</string>
+    <string name="sign_out">Đăng xuất</string>
+    <string name="sign_out_confirm_title">Đăng xuất tài khoản?</string>
+    <string name="sign_out_confirm_msg">Bạn cần đăng nhập lại để xem và chia sẻ ảnh với bạn bè.</string>
+
+    <!-- Permissions -->
+    <string name="camera_permission_title">Cấp quyền Camera</string>
+    <string name="camera_permission_desc">Friends cần quyền sử dụng Camera để chụp ảnh trực tiếp hoặc bạn có thể tải ảnh sẵn từ máy.</string>
+    <string name="camera_permission_button">Mở Camera ngay</string>
+    <string name="camera_permission_denied_settings">Quyền Camera đã bị từ chối. Vui lòng bật lại trong Cài đặt ứng dụng để tiếp tục chụp ảnh.</string>
+    <string name="open_settings">Mở Cài đặt</string>
+    <string name="storage_permission_needed">Cần quyền lưu trữ để lưu ảnh vào thư viện máy.</string>
+
+    <!-- Camera Booth Screen -->
+    <string name="booth_badge">FRIENDS</string>
+    <string name="booth_filter_label">Bộ lọc</string>
+    <string name="layout_single">1 tấm</string>
+    <string name="layout_strip">Dải dọc 4</string>
+    <string name="layout_grid">Lưới 2×2</string>
+    <string name="flip_camera">Đổi camera</string>
+    <string name="fill_light_on">Đèn màn hình: Bật</string>
+    <string name="fill_light_off">Đèn màn hình: Tắt</string>
+    <string name="flash_back_on">Đèn pin sau: Bật</string>
+    <string name="flash_back_off">Đèn pin sau: Tắt</string>
+    <string name="flash_front_on">Đèn sáng màn hình: Tối đa</string>
+    <string name="flash_front_off">Đèn sáng màn hình: Tắt</string>
+    <string name="pick_from_gallery">Tải ảnh từ máy</string>
+    <string name="take_photo_start">Chụp ngay</string>
+    <string name="cancel_shooting">Hủy chụp</string>
+    <string name="shooting_progress">Đang chụp %1$d/%2$d</string>
+    <string name="ready_hint_four_timed">Sẵn sàng chụp 4 tấm liên tiếp • Đếm ngược %1$d giây</string>
+    <string name="ready_hint_single_timed">Sẵn sàng chụp 1 tấm • Đếm ngược %1$d giây</string>
+    <string name="ready_hint_four_instant">Sẵn sàng chụp 4 tấm liên tiếp • Chụp ngay (0s)</string>
+    <string name="ready_hint_single_instant">Sẵn sàng chụp 1 tấm • Chụp ngay (0s)</string>
+    <string name="camera_initializing">Đang khởi động camera…</string>
+    <string name="camera_error_title">Không thể khởi động Camera</string>
+    <string name="camera_error_retry">Thử lại</string>
+    <string name="capture_error_prefix">Không thể chụp ảnh: %1$s</string>
+    <string name="pick_photos_failed">Không thể đọc ảnh đã chọn từ máy.</string>
+    <string name="loading_picked_photos">Đang tải ảnh từ máy…</string>
+    <string name="capturing_photo_now">Đang lưu ảnh…</string>
+    <string name="pick_from_files">Chọn từ tệp</string>
+
+    <!-- Studio Editor Screen -->
+    <string name="editor_title">Tùy chỉnh ảnh</string>
+    <string name="retake_photos">Chụp lại</string>
+    <string name="save_to_gallery">Lưu về máy</string>
+    <string name="publish_to_circle">Đăng lên Friends</string>
+    <string name="publishing_to_circle">Đang đăng…</string>
+    <string name="published_to_circle_success">Đã gửi ảnh tới bạn bè!</string>
+    <string name="view_circle_feed">Xem ảnh bạn bè</string>
+    <string name="choose_circle_to_publish">Chia sẻ tới bạn bè</string>
+    <string name="saving_in_progress">Đang xuất ảnh…</string>
+    <string name="saved_success_message">Đã lưu ảnh độ phân giải cao vào Thư viện!</string>
+    <string name="saved_error_message">Không thể lưu ảnh: %1$s</string>
+    <string name="view_in_gallery">Xem ảnh</string>
+    <string name="new_session">Chụp bộ mới</string>
+    <string name="retake_confirm_title">Quay lại phòng chụp?</string>
+    <string name="retake_confirm_message">Ảnh hiện tại sẽ bị xóa nếu bạn quay lại phòng chụp hoặc chọn ảnh mới.</string>
+    <string name="confirm">Đồng ý</string>
+    <string name="cancel">Hủy</string>
+
+    <!-- Editor Tabs -->
+    <string name="tab_frame">Khung viền</string>
+    <string name="tab_filter">Bộ lọc</string>
+    <string name="tab_ai_text">Chữ AI</string>
+    <string name="tab_caption">Chú thích</string>
+
+    <!-- AI Subject Depth & Creative Text -->
+    <string name="ai_scan_subject_btn">Quét chủ thể AI</string>
+    <string name="ai_scanning_subject">AI đang quét chủ thể…</string>
+    <string name="ai_rescan_subject">Quét lại AI</string>
+    <string name="ai_text_input_label">Chữ nghệ thuật trên ảnh</string>
+    <string name="ai_text_input_placeholder">Nhập chữ để đặt sau chủ thể…</string>
+    <string name="ai_behind_subject_toggle">Để chữ ra sau chủ thể (AI Depth)</string>
+    <string name="ai_repeat_shape_toggle">Lặp chữ quanh viền hình</string>
+    <string name="ai_subtab_shape">Kiểu dáng</string>
+    <string name="ai_subtab_style">Phong cách</string>
+    <string name="ai_subtab_font">Phông chữ</string>
+    <string name="ai_subtab_adjust">Cỡ &amp; Giãn chữ</string>
+    <string name="ai_slot_all">Tất cả</string>
+    <string name="ai_slot_item">Ảnh %1$d</string>
+    <string name="ai_suggestions_label">Gợi ý từ AI</string>
+    <string name="ai_reset_transform">Đặt lại</string>
+    <string name="ai_slider_size">Cỡ chữ AI</string>
+    <string name="ai_slider_letter_spacing">Giãn cách chữ</string>
+    <string name="ai_slider_line_spacing">Giãn dòng (2 dòng)</string>
+    <string name="ai_peek_quick_title">Chỉnh cỡ &amp; giãn chữ để lấp ló sau chủ thể</string>
+    <string name="ai_slider_pos_y">Vị trí cao / thấp</string>
+    <string name="ai_slider_pos_x">Vị trí trái / phải</string>
+    <string name="ai_slider_bend">Độ uốn / nghiêng</string>
+    <string name="ai_slider_opacity">Độ đậm nét</string>
+
+    <!-- Overlay Text Shapes -->
+    <string name="shape_straight">Ngang</string>
+    <string name="shape_arc_up">Vòng cung lên</string>
+    <string name="shape_arc_down">Vòng cung dưới</string>
+    <string name="shape_heart">Trái tim</string>
+    <string name="shape_circle">Vòng tròn</string>
+    <string name="shape_wave">Sóng lượn</string>
+    <string name="shape_magazine">Poster 2 dòng</string>
+    <string name="shape_diagonal_up">Chéo lên</string>
+    <string name="shape_diagonal_down">Chéo xuống</string>
+    <string name="shape_ribbon_v">Dải chữ V</string>
+
+    <!-- Overlay Text Styles -->
+    <string name="text_style_solid">Bóng đổ</string>
+    <string name="text_style_frosted">Kính mờ</string>
+    <string name="text_style_sticker">Sticker viền</string>
+    <string name="text_style_neon">Đèn Neon</string>
+    <string name="text_style_3d">Nổi khối 3D</string>
+    <string name="text_style_outline">Viền rỗng</string>
+    <string name="text_style_double_stroke">Viền kép</string>
+    <string name="text_style_gold">Vàng kim</string>
+    <string name="text_style_sunset">Hoàng hôn</string>
+    <string name="text_style_ocean">Đại dương</string>
+    <string name="text_style_rainbow">Cầu vồng</string>
+    <string name="text_style_glitch">Glitch RGB</string>
+    <string name="text_style_chrome">Bạc Chrome</string>
+    <string name="text_style_editorial">Tạp chí mờ</string>
+
+    <!-- Overlay Fonts -->
+    <string name="font_modern">Hiện đại</string>
+    <string name="font_poster">Poster Đậm</string>
+    <string name="font_luxury">Sang trọng</string>
+    <string name="font_brush">Cọ Uốn</string>
+    <string name="font_script">Thư pháp</string>
+    <string name="font_editorial">Cao Gọn</string>
+    <string name="font_rounded">Bo Tròn</string>
+    <string name="font_minimal">Tối giản</string>
+    <string name="font_handwriting">Viết tay</string>
+    <string name="font_typewriter">Máy chữ</string>
+    <string name="font_classic_serif">Cổ điển</string>
+    <string name="font_cyber">Tương lai</string>
+    <string name="font_system">Mặc định</string>
+
+    <!-- Frame Styles (11 curated frames) -->
+    <string name="frame_white">Trắng</string>
+    <string name="frame_black">Đen</string>
+    <string name="frame_sun_yellow">Vàng nắng</string>
+    <string name="frame_cream_gold">Kem vàng</string>
+    <string name="frame_pastel_pink">Hồng pastel</string>
+    <string name="frame_mint_green">Xanh bạc hà</string>
+    <string name="frame_lavender">Tím oải hương</string>
+    <string name="frame_light_blue">Xanh nhạt</string>
+    <string name="frame_caro">Caro hồng</string>
+    <string name="frame_yellow_caro">Caro vàng</string>
+    <string name="frame_film_strip">Cuộn phim</string>
+
+    <!-- Color Filters -->
+    <string name="filter_original">Gốc</string>
+    <string name="filter_bw">Đen trắng</string>
+    <string name="filter_vintage">Vintage</string>
+    <string name="filter_korean_pink">Hàn Quốc</string>
+
+    <!-- Footer Caption -->
+    <string name="caption_label">Chú thích dưới khung ảnh</string>
+    <string name="caption_placeholder">Ví dụ: Thanh xuân rực rỡ ♡</string>
+    <string name="caption_suggestions">Gợi ý nhanh</string>
+    <string name="show_date_label">In ngày tháng ở góc khung ảnh</string>
+    <string name="clear_text">Xóa</string>
+
+    <!-- Friends Feed & Shared Friend Management -->
+    <string name="circle_title">Ảnh bạn bè</string>
+    <string name="circle_create_btn">Tạo vòng</string>
+    <string name="circle_join_btn">Nhập mã vòng</string>
+    <string name="circle_add_friend_btn">Thêm bạn bè</string>
+    <string name="circle_all_filter">Tất cả</string>
+    <string name="circle_name_label">Tên vòng bạn bè</string>
+    <string name="circle_name_hint">Ví dụ: Hội bạn thân 12A</string>
+    <string name="circle_code_label">Mã mời của vòng</string>
+    <string name="circle_code_hint">Ví dụ: K7M9P2</string>
+    <string name="circle_copy_code">Sao chép mã</string>
+    <string name="circle_copied_toast">Đã sao chép mã: %1$s</string>
+    <string name="circle_members_count">%1$d thành viên</string>
+    <string name="circle_empty_title">Chưa có bạn bè nào</string>
+    <string name="circle_empty_desc">Gửi mã bạn bè của bạn hoặc nhập mã của bạn bè để cả hai cùng xem ảnh gửi lên nhé!</string>
+    <string name="circle_no_posts_title">Chưa có ảnh nào từ bạn bè</string>
+    <string name="circle_no_posts_desc">Hãy sang Phòng chụp, chụp hoặc tải ảnh rồi nhấn \"Đăng lên Friends\" để gửi cho bạn bè!</string>
+    <string name="circle_delete_post">Xóa ảnh</string>
+    <string name="circle_delete_confirm_title">Xóa ảnh khỏi Friends?</string>
+    <string name="circle_delete_confirm_msg">Bài đăng này sẽ bị xóa vĩnh viễn.</string>
+    <string name="circle_leave_btn">Rời vòng</string>
+    <string name="circle_save_friend_photo">Lưu ảnh này</string>
+    <string name="circle_grid_view">Lưới ảnh</string>
+    <string name="circle_single_view">Từng ảnh</string>
+
+    <!-- Profile & Bio -->
+    <string name="profile_settings_title">Trang cá nhân &amp; Cài đặt</string>
+    <string name="profile_change_avatar">Đổi ảnh đại diện</string>
+    <string name="profile_updating_avatar">Đang cập nhật…</string>
+    <string name="profile_bio_section">Ghi chú tiểu sử</string>
+    <string name="profile_bio_placeholder">Viết vài dòng giới thiệu về bạn…</string>
+    <string name="profile_bio_save">Lưu tiểu sử</string>
+    <string name="profile_bio_saving">Đang lưu…</string>
+
+    <!-- Mutual Friends & Invites -->
+    <string name="friends_manage_title">Bạn bè</string>
+    <string name="friend_requests_title">Lời mời kết bạn (%1$d)</string>
+    <string name="friends_list_title">Bạn bè của bạn (%1$d)</string>
+    <string name="send_friend_request_btn">Gửi lời mời kết bạn</string>
+    <string name="unfriend_btn">Hủy kết bạn</string>
+    <string name="my_friend_code_label">Mã bạn bè của bạn</string>
+    <string name="friend_code_input_label">Nhập mã bạn bè</string>
+    <string name="friend_code_input_hint">Ví dụ: AB7K29</string>
+    <string name="send_circle_invite">Gửi lời mời</string>
+    <string name="pending_invites_title">Lời mời vào vòng (%1$d)</string>
+    <string name="accept_invite">Chấp nhận</string>
+    <string name="decline_invite">Từ chối</string>
+    <string name="circle_members_title">Thành viên trong vòng</string>
+    <string name="circle_owner_badge">Trưởng nhóm</string>
+
+    <!-- Photo Reply Messaging -->
+    <string name="reply_to_photo">Nhắn tin</string>
+    <string name="reply_sheet_title">Trò chuyện về bức ảnh</string>
+    <string name="reply_input_hint">Nhắn tin trả lời ảnh này…</string>
+    <string name="send_reply">Gửi</string>
+    <string name="no_replies_yet">Chưa có tin nhắn nào. Hãy gửi lời khen đầu tiên nhé!</string>
+
+    <!-- Direct Messages (1-on-1) -->
+    <string name="dm_title">Tin nhắn cá nhân</string>
+    <string name="dm_subtitle">Trò chuyện riêng với bạn bè của bạn</string>
+    <string name="dm_new_chat_btn">Nhắn mới</string>
+    <string name="dm_start_by_code_title">Nhắn tin với bạn bè</string>
+    <string name="dm_start_by_code_btn">Bắt đầu trò chuyện</string>
+    <string name="dm_friends_section">Bạn bè</string>
+    <string name="dm_chats_section">Cuộc trò chuyện</string>
+    <string name="dm_empty_title">Chưa có tin nhắn cá nhân</string>
+    <string name="dm_empty_desc">Kết bạn bằng mã bạn bè để cùng chia sẻ ảnh và nhắn tin riêng nhé!</string>
+    <string name="dm_input_hint">Nhắn tin cho %1$s…</string>
+    <string name="dm_no_messages_yet">Hãy gửi lời chào đầu tiên tới %1$s!</string>
+    <string name="dm_start_tap_hint">Nhấn để nhắn tin</string>
+
+    <!-- Photo Crop & Edit -->
+    <string name="crop_editor_title">Cắt &amp; chỉnh ảnh</string>
+    <string name="crop_apply_btn">Xong</string>
+    <string name="edit_crop_photo_btn">Cắt ảnh</string>
+    <string name="crop_slot_choose_label">Chọn ảnh cần cắt / chỉnh:</string>
+
+    <!-- Reply Mode & Reactions -->
+    <string name="reply_mode_dm">Tin nhắn riêng</string>
+    <string name="reply_mode_public">Bình luận công khai</string>
+    <string name="reply_dm_hint">Nhắn riêng về ảnh này…</string>
+    <string name="reply_public_hint">Viết bình luận công khai…</string>
+    <string name="reply_dm_banner">Ảnh và lời nhắn sẽ được gửi thẳng vào cuộc trò chuyện riêng với %1$s.</string>
+    <string name="reply_dm_send_only">Gửi tin nhắn riêng</string>
+    <string name="reply_dm_send_and_open">Gửi &amp; mở chat</string>
+    <string name="reactions_title">Cảm xúc trên ảnh</string>
+    <string name="reactions_empty">Chưa có ai thả cảm xúc. Hãy là người đầu tiên nhé!</string>
+    <string name="reactions_count_label">%1$d cảm xúc</string>
+
+    <!-- Notifications Settings -->
+    <string name="settings_notifications_section">Thông báo ứng dụng</string>
+    <string name="settings_notifications_desc">Nhận thông báo khi có lời mời kết bạn, bình luận công khai, tin nhắn cá nhân và cảm xúc mới.</string>
+    <string name="notifications_enable_btn">Cấp quyền thông báo</string>
+    <string name="notifications_enabled_badge">Đã bật thông báo</string>
+    <string name="notifications_permission_denied">Bạn có thể bật quyền thông báo bất kỳ lúc nào trong Cài đặt.</string>
+</resources>

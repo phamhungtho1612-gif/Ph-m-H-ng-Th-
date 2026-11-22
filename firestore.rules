@@ -1,0 +1,565 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global default-deny safety net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isValidUserProfile(data) {
+      return data.userId is string && data.userId.size() >= 1 && data.userId.size() <= 128 &&
+             data.displayName is string && data.displayName.size() >= 1 && data.displayName.size() <= 60 &&
+             (!('photoUrl' in data) || (data.photoUrl is string && data.photoUrl.size() <= 600)) &&
+             (!('avatarBase64' in data) || (data.avatarBase64 is string && data.avatarBase64.size() <= 250000)) &&
+             (!('bio' in data) || (data.bio is string && data.bio.size() <= 160)) &&
+             (!('friendCode' in data) || (data.friendCode is string && data.friendCode.size() >= 4 && data.friendCode.size() <= 16 && data.friendCode.matches('^[A-Z0-9]+$'))) &&
+             data.createdAt is timestamp && data.createdAt <= request.time &&
+             data.updatedAt is timestamp && data.updatedAt <= request.time;
+    }
+
+    function isValidFriendCodeEntry(data, code) {
+      return data.friendCode is string && data.friendCode == code &&
+             data.friendCode.size() >= 4 && data.friendCode.size() <= 16 &&
+             data.friendCode.matches('^[A-Z0-9]+$') &&
+             data.userId is string && data.userId.size() >= 1 && data.userId.size() <= 128 &&
+             data.displayName is string && data.displayName.size() >= 1 && data.displayName.size() <= 60 &&
+             (!('photoUrl' in data) || (data.photoUrl is string && data.photoUrl.size() <= 600)) &&
+             (!('avatarBase64' in data) || (data.avatarBase64 is string && data.avatarBase64.size() <= 35000)) &&
+             data.createdAt is timestamp && data.createdAt <= request.time &&
+             data.updatedAt is timestamp && data.updatedAt <= request.time;
+    }
+
+    function isValidCircle(data, circleId) {
+      return data.name is string && data.name.size() >= 1 && data.name.size() <= 40 &&
+             data.inviteCode is string && data.inviteCode == circleId && data.inviteCode.size() >= 4 && data.inviteCode.size() <= 16 &&
+             data.ownerId is string && data.ownerId.size() >= 1 && data.ownerId.size() <= 128 &&
+             data.memberUids is list && data.memberUids.size() >= 1 && data.memberUids.size() <= 20 &&
+             (data.memberUids[0] is string) &&
+             data.ownerId in data.memberUids &&
+             (!('memberNames' in data) || (data.memberNames is map && data.memberNames.size() <= 20)) &&
+             data.createdAt is timestamp && data.createdAt <= request.time &&
+             data.updatedAt is timestamp && data.updatedAt <= request.time;
+    }
+
+    function isValidCircleInvite(data) {
+      return data.circleId is string && isValidId(data.circleId) &&
+             data.circleName is string && data.circleName.size() >= 1 && data.circleName.size() <= 40 &&
+             data.fromUserId is string && data.fromUserId.size() >= 1 && data.fromUserId.size() <= 128 &&
+             data.fromName is string && data.fromName.size() >= 1 && data.fromName.size() <= 60 &&
+             data.toUserId is string && data.toUserId.size() >= 1 && data.toUserId.size() <= 128 &&
+             data.toName is string && data.toName.size() >= 1 && data.toName.size() <= 60 &&
+             data.status in ['PENDING', 'ACCEPTED', 'DECLINED'] &&
+             data.createdAt is timestamp && data.createdAt <= request.time &&
+             data.updatedAt is timestamp && data.updatedAt <= request.time;
+    }
+
+    function isValidCirclePost(data) {
+      return data.circleId is string && isValidId(data.circleId) &&
+             data.circleName is string && data.circleName.size() >= 1 && data.circleName.size() <= 40 &&
+             data.authorId is string && data.authorId.size() >= 1 && data.authorId.size() <= 128 &&
+             data.authorName is string && data.authorName.size() >= 1 && data.authorName.size() <= 60 &&
+             (!('authorPhotoUrl' in data) || (data.authorPhotoUrl is string && data.authorPhotoUrl.size() <= 600)) &&
+             (!('authorAvatarBase64' in data) || (data.authorAvatarBase64 is string && data.authorAvatarBase64.size() <= 35000)) &&
+             data.caption is string && data.caption.size() <= 36 &&
+             (!('overlayText' in data) || (data.overlayText is string && data.overlayText.size() <= 40)) &&
+             data.layout in ['SINGLE_PHOTO', 'PHOTO_STRIP', 'GRID_2X2'] &&
+             data.frameStyle in [
+               'WHITE', 'BLACK', 'SUN_YELLOW', 'CREAM_GOLD', 'PASTEL_PINK',
+               'MINT_GREEN', 'LAVENDER', 'LIGHT_BLUE', 'CARO', 'YELLOW_CARO', 'FILM_STRIP'
+             ] &&
+             data.filter in ['ORIGINAL', 'HIGH_CONTRAST_BW', 'VINTAGE_FILM', 'KOREAN_PINK'] &&
+             data.dateLabel is string && data.dateLabel.size() <= 20 &&
+             data.imageBase64 is string && data.imageBase64.size() >= 20 && data.imageBase64.size() <= 550000 &&
+             data.memberUids is list && data.memberUids.size() >= 1 && data.memberUids.size() <= 50 &&
+             data.memberUids[0] is string &&
+             data.authorId in data.memberUids &&
+             data.likedBy is list && data.likedBy.size() <= 50 &&
+             (data.likedBy.size() == 0 || data.likedBy[0] is string) &&
+             (!('reactions' in data) || (data.reactions is map && data.reactions.size() <= 50)) &&
+             (!('reactorNames' in data) || (data.reactorNames is map && data.reactorNames.size() <= 50)) &&
+             data.createdAt is timestamp && data.createdAt <= request.time &&
+             data.updatedAt is timestamp && data.updatedAt <= request.time;
+    }
+
+    function isValidPostComment(data, postId) {
+      return data.postId is string && data.postId == postId && isValidId(data.postId) &&
+             data.circleId is string && isValidId(data.circleId) &&
+             data.authorId is string && data.authorId.size() >= 1 && data.authorId.size() <= 128 &&
+             data.authorName is string && data.authorName.size() >= 1 && data.authorName.size() <= 60 &&
+             (!('authorPhotoUrl' in data) || (data.authorPhotoUrl is string && data.authorPhotoUrl.size() <= 600)) &&
+             (!('authorAvatarBase64' in data) || (data.authorAvatarBase64 is string && data.authorAvatarBase64.size() <= 35000)) &&
+             data.text is string && data.text.size() >= 1 && data.text.size() <= 300 &&
+             data.memberUids is list && data.memberUids.size() >= 1 && data.memberUids.size() <= 50 &&
+             data.memberUids[0] is string &&
+             data.createdAt is timestamp && data.createdAt <= request.time &&
+             data.updatedAt is timestamp && data.updatedAt <= request.time;
+    }
+
+    function isValidFriendRequest(data) {
+      return data.fromUserId is string && data.fromUserId.size() >= 1 && data.fromUserId.size() <= 128 &&
+             data.fromName is string && data.fromName.size() >= 1 && data.fromName.size() <= 60 &&
+             data.toUserId is string && data.toUserId.size() >= 1 && data.toUserId.size() <= 128 &&
+             data.toName is string && data.toName.size() >= 1 && data.toName.size() <= 60 &&
+             data.fromUserId != data.toUserId &&
+             data.status in ['PENDING', 'ACCEPTED', 'DECLINED'] &&
+             data.createdAt is timestamp && data.createdAt <= request.time &&
+             data.updatedAt is timestamp && data.updatedAt <= request.time;
+    }
+
+    function isValidFriendship(data, pairId) {
+      return data.participantUids is list &&
+             data.participantUids.size() == 2 &&
+             data.participantUids[0] is string &&
+             data.participantUids[1] is string &&
+             data.participantUids[0] != data.participantUids[1] &&
+             (
+               pairId == (data.participantUids[0] + '_' + data.participantUids[1]) ||
+               pairId == (data.participantUids[1] + '_' + data.participantUids[0])
+             ) &&
+             data.participantNames is map &&
+             data.participantNames.size() <= 2 &&
+             (!('participantAvatars' in data) || (data.participantAvatars is map && data.participantAvatars.size() <= 2)) &&
+             data.createdAt is timestamp && data.createdAt <= request.time &&
+             data.updatedAt is timestamp && data.updatedAt <= request.time;
+    }
+
+    function isValidDirectChat(data, chatId) {
+      return data.participantUids is list &&
+             data.participantUids.size() == 2 &&
+             data.participantUids[0] is string &&
+             data.participantUids[1] is string &&
+             data.participantUids[0] != data.participantUids[1] &&
+             (
+               chatId == (data.participantUids[0] + '_' + data.participantUids[1]) ||
+               chatId == (data.participantUids[1] + '_' + data.participantUids[0])
+             ) &&
+             data.participantNames is map &&
+             (!('participantAvatars' in data) || (data.participantAvatars is map && data.participantAvatars.size() <= 2)) &&
+             data.lastMessageText is string && data.lastMessageText.size() <= 500 &&
+             (!('lastMessageSenderId' in data) || (data.lastMessageSenderId is string && data.lastMessageSenderId.size() <= 128)) &&
+             (!('lastMessageAt' in data) || (data.lastMessageAt is timestamp && data.lastMessageAt <= request.time)) &&
+             data.createdAt is timestamp && data.createdAt <= request.time &&
+             data.updatedAt is timestamp && data.updatedAt <= request.time;
+    }
+
+    function isValidDirectMessage(data, chatId) {
+      return data.chatId is string && data.chatId == chatId && isValidId(data.chatId) &&
+             data.senderId is string && data.senderId.size() >= 1 && data.senderId.size() <= 128 &&
+             data.senderName is string && data.senderName.size() >= 1 && data.senderName.size() <= 60 &&
+             data.text is string && data.text.size() >= 1 && data.text.size() <= 500 &&
+             data.participantUids is list &&
+             data.participantUids.size() == 2 &&
+             data.participantUids[0] is string &&
+             data.participantUids[1] is string &&
+             data.senderId in data.participantUids &&
+             (!('replyPostId' in data) || (data.replyPostId is string && isValidId(data.replyPostId))) &&
+             (!('replyPostImageBase64' in data) || (data.replyPostImageBase64 is string && data.replyPostImageBase64.size() <= 260000)) &&
+             (!('replyPostAuthorId' in data) || (data.replyPostAuthorId is string && data.replyPostAuthorId.size() <= 128)) &&
+             (!('replyPostAuthorName' in data) || (data.replyPostAuthorName is string && data.replyPostAuthorName.size() <= 60)) &&
+             (!('replyPostAuthorAvatarBase64' in data) || (data.replyPostAuthorAvatarBase64 is string && data.replyPostAuthorAvatarBase64.size() <= 35000)) &&
+             (!('replyPostAuthorPhotoUrl' in data) || (data.replyPostAuthorPhotoUrl is string && data.replyPostAuthorPhotoUrl.size() <= 600)) &&
+             (!('replyPostCaption' in data) || (data.replyPostCaption is string && data.replyPostCaption.size() <= 60)) &&
+             (!('replyPostTimeLabel' in data) || (data.replyPostTimeLabel is string && data.replyPostTimeLabel.size() <= 40)) &&
+             data.createdAt is timestamp && data.createdAt <= request.time &&
+             data.updatedAt is timestamp && data.updatedAt <= request.time;
+    }
+
+    match /users/{userId} {
+      allow get, list: if isSignedIn() && request.auth.uid == userId;
+
+      allow create: if isSignedIn() &&
+                       isValidId(userId) &&
+                       request.auth.uid == userId &&
+                       incoming().userId == request.auth.uid &&
+                       incoming().keys().hasAll(['userId', 'displayName', 'createdAt', 'updatedAt']) &&
+                       incoming().keys().hasOnly(['userId', 'displayName', 'photoUrl', 'avatarBase64', 'bio', 'friendCode', 'createdAt', 'updatedAt']) &&
+                       isValidUserProfile(incoming());
+
+      allow update: if isSignedIn() &&
+                       isValidId(userId) &&
+                       request.auth.uid == userId &&
+                       incoming().userId == existing().userId &&
+                       incoming().createdAt == existing().createdAt &&
+                       incoming().keys().hasAll(['userId', 'displayName', 'createdAt', 'updatedAt']) &&
+                       incoming().keys().hasOnly(['userId', 'displayName', 'photoUrl', 'avatarBase64', 'bio', 'friendCode', 'createdAt', 'updatedAt']) &&
+                       isValidUserProfile(incoming()) &&
+                       incoming().diff(existing()).affectedKeys().hasOnly(['displayName', 'photoUrl', 'avatarBase64', 'bio', 'friendCode', 'updatedAt']);
+
+      allow delete: if isSignedIn() && isValidId(userId) && request.auth.uid == userId;
+    }
+
+    match /friend_codes/{friendCode} {
+      // Exact code lookup only — never allow listing/scraping user directory
+      allow get: if isSignedIn() && isValidId(friendCode);
+      allow list: if false;
+
+      allow create: if isSignedIn() &&
+                       isValidId(friendCode) &&
+                       incoming().keys().hasAll(['friendCode', 'userId', 'displayName', 'createdAt', 'updatedAt']) &&
+                       incoming().keys().hasOnly(['friendCode', 'userId', 'displayName', 'photoUrl', 'avatarBase64', 'createdAt', 'updatedAt']) &&
+                       isValidFriendCodeEntry(incoming(), friendCode) &&
+                       incoming().userId == request.auth.uid;
+
+      allow update: if isSignedIn() &&
+                       isValidId(friendCode) &&
+                       existing().userId == request.auth.uid &&
+                       incoming().userId == existing().userId &&
+                       incoming().friendCode == existing().friendCode &&
+                       incoming().createdAt == existing().createdAt &&
+                       incoming().keys().hasAll(['friendCode', 'userId', 'displayName', 'createdAt', 'updatedAt']) &&
+                       incoming().keys().hasOnly(['friendCode', 'userId', 'displayName', 'photoUrl', 'avatarBase64', 'createdAt', 'updatedAt']) &&
+                       isValidFriendCodeEntry(incoming(), friendCode) &&
+                       incoming().diff(existing()).affectedKeys().hasOnly(['displayName', 'photoUrl', 'avatarBase64', 'updatedAt']);
+
+      allow delete: if isSignedIn() && isValidId(friendCode) && existing().userId == request.auth.uid;
+    }
+
+    match /circles/{circleId} {
+      allow get, list: if isSignedIn() && request.auth.uid in existing().memberUids;
+
+      allow create: if isSignedIn() &&
+                       isValidId(circleId) &&
+                       incoming().keys().hasAll(['name', 'inviteCode', 'ownerId', 'memberUids', 'createdAt', 'updatedAt']) &&
+                       incoming().keys().hasOnly(['name', 'inviteCode', 'ownerId', 'memberUids', 'memberNames', 'createdAt', 'updatedAt']) &&
+                       isValidCircle(incoming(), circleId) &&
+                       incoming().ownerId == request.auth.uid &&
+                       request.auth.uid in incoming().memberUids &&
+                       incoming().memberUids.size() == 1;
+
+      allow update: if isSignedIn() &&
+                       isValidId(circleId) &&
+                       isValidCircle(incoming(), circleId) &&
+                       incoming().ownerId == existing().ownerId &&
+                       incoming().inviteCode == existing().inviteCode &&
+                       incoming().createdAt == existing().createdAt &&
+                       (
+                         // Action 1: Join circle with invite code or accepted invite (non-member adds only self)
+                         (
+                           !(request.auth.uid in existing().memberUids) &&
+                           request.auth.uid in incoming().memberUids &&
+                           incoming().memberUids.size() == existing().memberUids.size() + 1 &&
+                           incoming().memberUids.hasAll(existing().memberUids) &&
+                           incoming().diff(existing()).affectedKeys().hasOnly(['memberUids', 'memberNames', 'updatedAt'])
+                         ) ||
+                         // Action 2: Leave circle (non-owner member removes only self)
+                         (
+                           request.auth.uid in existing().memberUids &&
+                           request.auth.uid != existing().ownerId &&
+                           !(request.auth.uid in incoming().memberUids) &&
+                           existing().memberUids.hasAll(incoming().memberUids) &&
+                           incoming().memberUids.size() == existing().memberUids.size() - 1 &&
+                           incoming().diff(existing()).affectedKeys().hasOnly(['memberUids', 'memberNames', 'updatedAt'])
+                         ) ||
+                         // Action 3: Rename circle (owner only)
+                         (
+                           request.auth.uid == existing().ownerId &&
+                           incoming().diff(existing()).affectedKeys().hasOnly(['name', 'updatedAt'])
+                         )
+                       );
+
+      allow delete: if isSignedIn() && isValidId(circleId) && request.auth.uid == existing().ownerId;
+    }
+
+    match /circle_invites/{inviteId} {
+      allow get, list: if isSignedIn() &&
+                          (existing().toUserId == request.auth.uid || existing().fromUserId == request.auth.uid);
+
+      allow create: if isSignedIn() &&
+                       isValidId(inviteId) &&
+                       incoming().keys().hasAll(['circleId', 'circleName', 'fromUserId', 'fromName', 'toUserId', 'toName', 'status', 'createdAt', 'updatedAt']) &&
+                       incoming().keys().hasOnly(['circleId', 'circleName', 'fromUserId', 'fromName', 'toUserId', 'toName', 'status', 'createdAt', 'updatedAt']) &&
+                       isValidCircleInvite(incoming()) &&
+                       incoming().fromUserId == request.auth.uid &&
+                       incoming().toUserId != request.auth.uid &&
+                       incoming().status == 'PENDING' &&
+                       exists(/databases/$(database)/documents/circles/$(incoming().circleId)) &&
+                       request.auth.uid in get(/databases/$(database)/documents/circles/$(incoming().circleId)).data.memberUids &&
+                       !(incoming().toUserId in get(/databases/$(database)/documents/circles/$(incoming().circleId)).data.memberUids);
+
+      allow update: if isSignedIn() &&
+                       isValidId(inviteId) &&
+                       isValidCircleInvite(incoming()) &&
+                       incoming().circleId == existing().circleId &&
+                       incoming().fromUserId == existing().fromUserId &&
+                       incoming().toUserId == existing().toUserId &&
+                       incoming().createdAt == existing().createdAt &&
+                       existing().status == 'PENDING' &&
+                       request.auth.uid == existing().toUserId &&
+                       incoming().status in ['ACCEPTED', 'DECLINED'] &&
+                       incoming().diff(existing()).affectedKeys().hasOnly(['status', 'updatedAt']);
+
+      allow delete: if isSignedIn() && isValidId(inviteId) &&
+                       (existing().fromUserId == request.auth.uid || existing().toUserId == request.auth.uid);
+    }
+
+    match /circle_posts/{postId} {
+      allow get, list: if isSignedIn() && request.auth.uid in existing().memberUids;
+
+      allow create: if isSignedIn() &&
+                       isValidId(postId) &&
+                       incoming().keys().hasAll([
+                         'circleId', 'circleName', 'authorId', 'authorName', 'caption',
+                         'layout', 'frameStyle', 'filter', 'dateLabel', 'imageBase64',
+                         'memberUids', 'likedBy', 'createdAt', 'updatedAt'
+                       ]) &&
+                       incoming().keys().hasOnly([
+                         'circleId', 'circleName', 'authorId', 'authorName', 'authorPhotoUrl', 'authorAvatarBase64', 'caption', 'overlayText',
+                         'layout', 'frameStyle', 'filter', 'dateLabel', 'imageBase64',
+                         'memberUids', 'likedBy', 'reactions', 'reactorNames', 'createdAt', 'updatedAt'
+                       ]) &&
+                       isValidCirclePost(incoming()) &&
+                       incoming().authorId == request.auth.uid &&
+                       incoming().likedBy.size() == 0 &&
+                       (!('reactions' in incoming()) || incoming().reactions.size() == 0) &&
+                       (!('reactorNames' in incoming()) || incoming().reactorNames.size() == 0) &&
+                       (
+                         (
+                           incoming().circleId == 'FRIENDS_ALL' &&
+                           request.auth.uid in incoming().memberUids
+                         ) ||
+                         (
+                           exists(/databases/$(database)/documents/circles/$(incoming().circleId)) &&
+                           request.auth.uid in get(/databases/$(database)/documents/circles/$(incoming().circleId)).data.memberUids &&
+                           incoming().memberUids == get(/databases/$(database)/documents/circles/$(incoming().circleId)).data.memberUids
+                         )
+                       );
+
+      allow update: if isSignedIn() &&
+                       isValidId(postId) &&
+                       isValidCirclePost(incoming()) &&
+                       incoming().authorId == existing().authorId &&
+                       incoming().circleId == existing().circleId &&
+                       incoming().createdAt == existing().createdAt &&
+                       (
+                         // Action 1: Toggle own like (member adds or removes only their own UID)
+                         (
+                           request.auth.uid in existing().memberUids &&
+                           incoming().diff(existing()).affectedKeys().hasOnly(['likedBy', 'updatedAt']) &&
+                           (
+                             (
+                               !(request.auth.uid in existing().likedBy) &&
+                               request.auth.uid in incoming().likedBy &&
+                               incoming().likedBy.size() == existing().likedBy.size() + 1 &&
+                               incoming().likedBy.hasAll(existing().likedBy)
+                             ) ||
+                             (
+                               request.auth.uid in existing().likedBy &&
+                               !(request.auth.uid in incoming().likedBy) &&
+                               existing().likedBy.hasAll(incoming().likedBy) &&
+                               incoming().likedBy.size() == existing().likedBy.size() - 1
+                             )
+                           )
+                         ) ||
+                         // Action 2: Sync friend/circle memberUids (author only)
+                         (
+                           request.auth.uid == existing().authorId &&
+                           request.auth.uid in incoming().memberUids &&
+                           incoming().diff(existing()).affectedKeys().hasOnly(['memberUids', 'updatedAt']) &&
+                           (
+                             existing().circleId == 'FRIENDS_ALL' ||
+                             (
+                               exists(/databases/$(database)/documents/circles/$(existing().circleId)) &&
+                               incoming().memberUids == get(/databases/$(database)/documents/circles/$(existing().circleId)).data.memberUids
+                             )
+                           )
+                         ) ||
+                         // Action 3: Set or remove own emoji reaction (member updates only own UID entry in reactions & reactorNames)
+                         (
+                           request.auth.uid in existing().memberUids &&
+                           incoming().diff(existing()).affectedKeys().hasOnly(['reactions', 'reactorNames', 'updatedAt']) &&
+                           incoming().get('reactions', {}).diff(existing().get('reactions', {})).affectedKeys().hasOnly([request.auth.uid]) &&
+                           incoming().get('reactorNames', {}).diff(existing().get('reactorNames', {})).affectedKeys().hasOnly([request.auth.uid]) &&
+                           (
+                             !(request.auth.uid in incoming().get('reactions', {})) ||
+                             (
+                               incoming().reactions[request.auth.uid] is string &&
+                               incoming().reactions[request.auth.uid].size() >= 1 &&
+                               incoming().reactions[request.auth.uid].size() <= 16
+                             )
+                           ) &&
+                           (
+                             !(request.auth.uid in incoming().get('reactorNames', {})) ||
+                             (
+                               incoming().reactorNames[request.auth.uid] is string &&
+                               incoming().reactorNames[request.auth.uid].size() >= 1 &&
+                               incoming().reactorNames[request.auth.uid].size() <= 60
+                             )
+                           )
+                         ) ||
+                         // Action 4: Sync author's compact avatar on their own post
+                         (
+                           request.auth.uid == existing().authorId &&
+                           incoming().diff(existing()).affectedKeys().hasOnly(['authorAvatarBase64', 'updatedAt'])
+                         )
+                       );
+
+      allow delete: if isSignedIn() && isValidId(postId) && request.auth.uid == existing().authorId;
+
+      match /comments/{commentId} {
+        allow get, list: if isSignedIn() && request.auth.uid in existing().memberUids;
+
+        allow create: if isSignedIn() &&
+                         isValidId(postId) &&
+                         isValidId(commentId) &&
+                         incoming().keys().hasAll([
+                           'postId', 'circleId', 'authorId', 'authorName', 'text',
+                           'memberUids', 'createdAt', 'updatedAt'
+                         ]) &&
+                         incoming().keys().hasOnly([
+                           'postId', 'circleId', 'authorId', 'authorName', 'authorPhotoUrl', 'authorAvatarBase64', 'text',
+                           'memberUids', 'createdAt', 'updatedAt'
+                         ]) &&
+                         isValidPostComment(incoming(), postId) &&
+                         incoming().authorId == request.auth.uid &&
+                         exists(/databases/$(database)/documents/circle_posts/$(postId)) &&
+                         request.auth.uid in get(/databases/$(database)/documents/circle_posts/$(postId)).data.memberUids &&
+                         incoming().memberUids == get(/databases/$(database)/documents/circle_posts/$(postId)).data.memberUids;
+
+        allow update: if isSignedIn() &&
+                         isValidId(postId) &&
+                         isValidId(commentId) &&
+                         isValidPostComment(incoming(), postId) &&
+                         incoming().postId == existing().postId &&
+                         incoming().circleId == existing().circleId &&
+                         incoming().authorId == existing().authorId &&
+                         incoming().text == existing().text &&
+                         incoming().createdAt == existing().createdAt &&
+                         exists(/databases/$(database)/documents/circle_posts/$(postId)) &&
+                         (
+                           request.auth.uid == existing().authorId ||
+                           request.auth.uid == get(/databases/$(database)/documents/circle_posts/$(postId)).data.authorId
+                         ) &&
+                         incoming().memberUids == get(/databases/$(database)/documents/circle_posts/$(postId)).data.memberUids &&
+                         incoming().diff(existing()).affectedKeys().hasOnly(['memberUids', 'updatedAt']);
+
+        allow delete: if isSignedIn() && isValidId(postId) && isValidId(commentId) &&
+                         (
+                           existing().authorId == request.auth.uid ||
+                           (
+                             exists(/databases/$(database)/documents/circle_posts/$(postId)) &&
+                             get(/databases/$(database)/documents/circle_posts/$(postId)).data.authorId == request.auth.uid
+                           )
+                         );
+      }
+    }
+
+    match /direct_chats/{chatId} {
+      allow get, list: if isSignedIn() && request.auth.uid in existing().participantUids;
+
+      allow create: if isSignedIn() &&
+                       isValidId(chatId) &&
+                       incoming().keys().hasAll([
+                         'participantUids', 'participantNames', 'lastMessageText', 'createdAt', 'updatedAt'
+                       ]) &&
+                       incoming().keys().hasOnly([
+                         'participantUids', 'participantNames', 'participantAvatars', 'lastMessageText',
+                         'lastMessageSenderId', 'lastMessageAt', 'createdAt', 'updatedAt'
+                       ]) &&
+                       isValidDirectChat(incoming(), chatId) &&
+                       request.auth.uid in incoming().participantUids;
+
+      allow update: if isSignedIn() &&
+                       isValidId(chatId) &&
+                       isValidDirectChat(incoming(), chatId) &&
+                       request.auth.uid in existing().participantUids &&
+                       incoming().participantUids == existing().participantUids &&
+                       incoming().createdAt == existing().createdAt &&
+                       incoming().diff(existing()).affectedKeys().hasOnly([
+                         'participantNames', 'participantAvatars', 'lastMessageText', 'lastMessageSenderId', 'lastMessageAt', 'updatedAt'
+                       ]);
+
+      allow delete: if isSignedIn() && isValidId(chatId) && request.auth.uid in existing().participantUids;
+
+      match /messages/{messageId} {
+        allow get, list: if isSignedIn() && request.auth.uid in existing().participantUids;
+
+        allow create: if isSignedIn() &&
+                         isValidId(chatId) &&
+                         isValidId(messageId) &&
+                         incoming().keys().hasAll([
+                           'chatId', 'senderId', 'senderName', 'text', 'participantUids', 'createdAt', 'updatedAt'
+                         ]) &&
+                         incoming().keys().hasOnly([
+                           'chatId', 'senderId', 'senderName', 'text', 'participantUids',
+                           'replyPostId', 'replyPostImageBase64', 'replyPostAuthorId', 'replyPostAuthorName',
+                           'replyPostAuthorAvatarBase64', 'replyPostAuthorPhotoUrl', 'replyPostCaption', 'replyPostTimeLabel',
+                           'createdAt', 'updatedAt'
+                         ]) &&
+                         isValidDirectMessage(incoming(), chatId) &&
+                         incoming().senderId == request.auth.uid &&
+                         exists(/databases/$(database)/documents/direct_chats/$(chatId)) &&
+                         request.auth.uid in get(/databases/$(database)/documents/direct_chats/$(chatId)).data.participantUids &&
+                         incoming().participantUids == get(/databases/$(database)/documents/direct_chats/$(chatId)).data.participantUids;
+
+        allow update: if false;
+
+        allow delete: if isSignedIn() && isValidId(chatId) && isValidId(messageId) &&
+                         existing().senderId == request.auth.uid;
+      }
+    }
+
+    match /friend_requests/{requestId} {
+      allow get, list: if isSignedIn() &&
+                          (existing().toUserId == request.auth.uid || existing().fromUserId == request.auth.uid);
+
+      allow create: if isSignedIn() &&
+                       isValidId(requestId) &&
+                       incoming().keys().hasAll(['fromUserId', 'fromName', 'toUserId', 'toName', 'status', 'createdAt', 'updatedAt']) &&
+                       incoming().keys().hasOnly(['fromUserId', 'fromName', 'toUserId', 'toName', 'status', 'createdAt', 'updatedAt']) &&
+                       isValidFriendRequest(incoming()) &&
+                       incoming().fromUserId == request.auth.uid &&
+                       incoming().status == 'PENDING';
+
+      allow update: if isSignedIn() &&
+                       isValidId(requestId) &&
+                       isValidFriendRequest(incoming()) &&
+                       incoming().fromUserId == existing().fromUserId &&
+                       incoming().toUserId == existing().toUserId &&
+                       incoming().createdAt == existing().createdAt &&
+                       existing().status == 'PENDING' &&
+                       request.auth.uid == existing().toUserId &&
+                       incoming().status in ['ACCEPTED', 'DECLINED'] &&
+                       incoming().diff(existing()).affectedKeys().hasOnly(['status', 'updatedAt']);
+
+      allow delete: if isSignedIn() && isValidId(requestId) &&
+                       (existing().fromUserId == request.auth.uid || existing().toUserId == request.auth.uid);
+    }
+
+    match /friendships/{pairId} {
+      allow get, list: if isSignedIn() && request.auth.uid in existing().participantUids;
+
+      allow create: if isSignedIn() &&
+                       isValidId(pairId) &&
+                       incoming().keys().hasAll(['participantUids', 'participantNames', 'createdAt', 'updatedAt']) &&
+                       incoming().keys().hasOnly(['participantUids', 'participantNames', 'participantAvatars', 'createdAt', 'updatedAt']) &&
+                       isValidFriendship(incoming(), pairId) &&
+                       request.auth.uid in incoming().participantUids;
+
+      allow update: if isSignedIn() &&
+                       isValidId(pairId) &&
+                       isValidFriendship(incoming(), pairId) &&
+                       request.auth.uid in existing().participantUids &&
+                       incoming().participantUids == existing().participantUids &&
+                       incoming().createdAt == existing().createdAt &&
+                       incoming().diff(existing()).affectedKeys().hasOnly(['participantNames', 'participantAvatars', 'updatedAt']);
+
+      allow delete: if isSignedIn() && isValidId(pairId) && request.auth.uid in existing().participantUids;
+    }
+  }
+}

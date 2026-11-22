@@ -1,0 +1,6 @@
+{
+  "name": "Friends",
+  "description": "Ứng dụng chụp ảnh Friends phong cách Locket & Photobooth lấy liền bằng tiếng Việt: chia sẻ ảnh cho bạn bè chung, tin nhắn cá nhân, widget màn hình chính và biểu tượng tùy biến.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

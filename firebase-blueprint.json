@@ -1,0 +1,516 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Authenticated user profile scoped strictly to the owning UID.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "Firebase Auth UID of the user."
+        },
+        "displayName": {
+          "type": "string",
+          "description": "Display name shown in Friends Circle."
+        },
+        "photoUrl": {
+          "type": "string",
+          "description": "Optional avatar URL."
+        },
+        "avatarBase64": {
+          "type": "string",
+          "description": "Optional user-uploaded profile avatar JPEG encoded in Base64."
+        },
+        "bio": {
+          "type": "string",
+          "description": "Optional personal bio note up to 160 characters."
+        },
+        "friendCode": {
+          "type": "string",
+          "description": "Optional personal 6-character friend code for receiving direct circle invites."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp set via FieldValue.serverTimestamp()."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp set via FieldValue.serverTimestamp()."
+        }
+      },
+      "required": ["userId", "displayName", "createdAt", "updatedAt"]
+    },
+    "FriendCodeEntry": {
+      "title": "FriendCodeEntry",
+      "description": "Non-PII point-lookup entry mapping a personal friend code to a UID and display name.",
+      "type": "object",
+      "properties": {
+        "friendCode": {
+          "type": "string",
+          "description": "Personal uppercase alphanumeric friend code matching document ID."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Owner UID."
+        },
+        "displayName": {
+          "type": "string",
+          "description": "Public display name."
+        },
+        "photoUrl": {
+          "type": "string",
+          "description": "Optional avatar URL."
+        },
+        "avatarBase64": {
+          "type": "string",
+          "description": "Optional compact JPEG avatar Base64 for friend previews."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp set via FieldValue.serverTimestamp()."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp set via FieldValue.serverTimestamp()."
+        }
+      },
+      "required": ["friendCode", "userId", "displayName", "createdAt", "updatedAt"]
+    },
+    "FriendCircle": {
+      "title": "FriendCircle",
+      "description": "Private online friends circle identified by an invite code.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the friends circle."
+        },
+        "inviteCode": {
+          "type": "string",
+          "description": "Shareable invite code matching document ID."
+        },
+        "ownerId": {
+          "type": "string",
+          "description": "UID of the circle creator."
+        },
+        "memberUids": {
+          "type": "array",
+          "description": "Bounded list of member UIDs (max 20)."
+        },
+        "memberNames": {
+          "type": "object",
+          "description": "Optional bounded map of member UID to display name."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp set via FieldValue.serverTimestamp()."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp set via FieldValue.serverTimestamp()."
+        }
+      },
+      "required": ["name", "inviteCode", "ownerId", "memberUids", "createdAt", "updatedAt"]
+    },
+    "CircleInvite": {
+      "title": "CircleInvite",
+      "description": "Direct invitation sent from a circle member to a friend using their friend code.",
+      "type": "object",
+      "properties": {
+        "circleId": {
+          "type": "string",
+          "description": "Target circle ID."
+        },
+        "circleName": {
+          "type": "string",
+          "description": "Target circle name."
+        },
+        "fromUserId": {
+          "type": "string",
+          "description": "Sender UID."
+        },
+        "fromName": {
+          "type": "string",
+          "description": "Sender display name."
+        },
+        "toUserId": {
+          "type": "string",
+          "description": "Recipient UID."
+        },
+        "toName": {
+          "type": "string",
+          "description": "Recipient display name."
+        },
+        "status": {
+          "type": "string",
+          "enum": ["PENDING", "ACCEPTED", "DECLINED"],
+          "description": "Invitation status."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp set via FieldValue.serverTimestamp()."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp set via FieldValue.serverTimestamp()."
+        }
+      },
+      "required": ["circleId", "circleName", "fromUserId", "fromName", "toUserId", "toName", "status", "createdAt", "updatedAt"]
+    },
+    "CirclePost": {
+      "title": "CirclePost",
+      "description": "Photobooth collage or single photo published by a member to a friends circle.",
+      "type": "object",
+      "properties": {
+        "circleId": {
+          "type": "string",
+          "description": "ID of the target FriendCircle."
+        },
+        "circleName": {
+          "type": "string",
+          "description": "Display name of the FriendCircle."
+        },
+        "authorId": {
+          "type": "string",
+          "description": "UID of the post author."
+        },
+        "authorName": {
+          "type": "string",
+          "description": "Display name of the author."
+        },
+        "authorPhotoUrl": {
+          "type": "string",
+          "description": "Optional author avatar URL."
+        },
+        "authorAvatarBase64": {
+          "type": "string",
+          "description": "Optional compact author avatar JPEG Base64."
+        },
+        "caption": {
+          "type": "string",
+          "description": "Short memory caption on the photobooth frame."
+        },
+        "overlayText": {
+          "type": "string",
+          "description": "Optional text stamped directly on the photo."
+        },
+        "layout": {
+          "type": "string",
+          "enum": ["SINGLE_PHOTO", "PHOTO_STRIP", "GRID_2X2"],
+          "description": "Photobooth layout."
+        },
+        "frameStyle": {
+          "type": "string",
+          "enum": [
+            "WHITE",
+            "BLACK",
+            "SUN_YELLOW",
+            "CREAM_GOLD",
+            "PASTEL_PINK",
+            "MINT_GREEN",
+            "LAVENDER",
+            "LIGHT_BLUE",
+            "CARO",
+            "YELLOW_CARO",
+            "FILM_STRIP"
+          ],
+          "description": "Selected frame style."
+        },
+        "filter": {
+          "type": "string",
+          "enum": ["ORIGINAL", "HIGH_CONTRAST_BW", "VINTAGE_FILM", "KOREAN_PINK"],
+          "description": "Selected color filter."
+        },
+        "dateLabel": {
+          "type": "string",
+          "description": "Formatted date stamp printed on the collage."
+        },
+        "imageBase64": {
+          "type": "string",
+          "description": "Compressed JPEG image encoded in Base64."
+        },
+        "memberUids": {
+          "type": "array",
+          "description": "Denormalized bounded list of friend/member UIDs (max 50) authorized to read, like, and reply to this post."
+        },
+        "likedBy": {
+          "type": "array",
+          "description": "Bounded list of member UIDs (max 50) who liked the post."
+        },
+        "reactions": {
+          "type": "object",
+          "description": "Map of friend UID to emoji reaction string."
+        },
+        "reactorNames": {
+          "type": "object",
+          "description": "Map of friend UID to display name for reaction viewers."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp set via FieldValue.serverTimestamp()."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp set via FieldValue.serverTimestamp()."
+        }
+      },
+      "required": [
+        "circleId",
+        "circleName",
+        "authorId",
+        "authorName",
+        "caption",
+        "layout",
+        "frameStyle",
+        "filter",
+        "dateLabel",
+        "imageBase64",
+        "memberUids",
+        "likedBy",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "PostComment": {
+      "title": "PostComment",
+      "description": "Reply message on a Friends Circle photo post.",
+      "type": "object",
+      "properties": {
+        "postId": {
+          "type": "string",
+          "description": "Parent CirclePost document ID."
+        },
+        "circleId": {
+          "type": "string",
+          "description": "Circle ID of the parent post."
+        },
+        "authorId": {
+          "type": "string",
+          "description": "UID of the sender."
+        },
+        "authorName": {
+          "type": "string",
+          "description": "Display name of the sender."
+        },
+        "authorPhotoUrl": {
+          "type": "string",
+          "description": "Optional sender avatar URL."
+        },
+        "authorAvatarBase64": {
+          "type": "string",
+          "description": "Optional compact sender avatar JPEG Base64."
+        },
+        "text": {
+          "type": "string",
+          "description": "Message reply text (1-300 chars)."
+        },
+        "memberUids": {
+          "type": "array",
+          "description": "Denormalized list of friend/member UIDs (max 50) copied from parent CirclePost."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp set via FieldValue.serverTimestamp()."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp set via FieldValue.serverTimestamp()."
+        }
+      },
+      "required": [
+        "postId",
+        "circleId",
+        "authorId",
+        "authorName",
+        "text",
+        "memberUids",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "DirectChat": {
+      "title": "DirectChat",
+      "description": "Private 1-on-1 conversation header between two friends.",
+      "type": "object",
+      "properties": {
+        "participantUids": {
+          "type": "array",
+          "description": "Exact two-element list of participant UIDs."
+        },
+        "participantNames": {
+          "type": "object",
+          "description": "Map of participant UID to display name."
+        },
+        "participantAvatars": {
+          "type": "object",
+          "description": "Optional map of participant UID to compact avatar Base64."
+        },
+        "lastMessageText": {
+          "type": "string",
+          "description": "Preview of the latest direct message."
+        },
+        "lastMessageSenderId": {
+          "type": "string",
+          "description": "Optional UID of the sender of the latest message."
+        },
+        "lastMessageAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Optional server timestamp of the latest message."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp set via FieldValue.serverTimestamp()."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp set via FieldValue.serverTimestamp()."
+        }
+      },
+      "required": ["participantUids", "participantNames", "lastMessageText", "createdAt", "updatedAt"]
+    },
+    "DirectMessage": {
+      "title": "DirectMessage",
+      "description": "Individual message inside a private 1-on-1 friend chat.",
+      "type": "object",
+      "properties": {
+        "chatId": {
+          "type": "string",
+          "description": "Parent DirectChat document ID."
+        },
+        "senderId": {
+          "type": "string",
+          "description": "UID of the sender."
+        },
+        "senderName": {
+          "type": "string",
+          "description": "Display name of the sender."
+        },
+        "text": {
+          "type": "string",
+          "description": "Message body (1-500 chars)."
+        },
+        "participantUids": {
+          "type": "array",
+          "description": "Denormalized two-element participant UID list from parent DirectChat."
+        },
+        "replyPostId": { "type": "string" },
+        "replyPostImageBase64": { "type": "string" },
+        "replyPostAuthorId": { "type": "string" },
+        "replyPostAuthorName": { "type": "string" },
+        "replyPostAuthorAvatarBase64": { "type": "string" },
+        "replyPostAuthorPhotoUrl": { "type": "string" },
+        "replyPostCaption": { "type": "string" },
+        "replyPostTimeLabel": { "type": "string" },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp set via FieldValue.serverTimestamp()."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp set via FieldValue.serverTimestamp()."
+        }
+      },
+      "required": ["chatId", "senderId", "senderName", "text", "participantUids", "createdAt", "updatedAt"]
+    },
+    "FriendRequest": {
+      "title": "FriendRequest",
+      "description": "Friend connection request sent using a user's personal friend code.",
+      "type": "object",
+      "properties": {
+        "fromUserId": { "type": "string", "description": "Sender UID." },
+        "fromName": { "type": "string", "description": "Sender display name." },
+        "toUserId": { "type": "string", "description": "Recipient UID." },
+        "toName": { "type": "string", "description": "Recipient display name." },
+        "status": {
+          "type": "string",
+          "enum": ["PENDING", "ACCEPTED", "DECLINED"],
+          "description": "Request status."
+        },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["fromUserId", "fromName", "toUserId", "toName", "status", "createdAt", "updatedAt"]
+    },
+    "Friendship": {
+      "title": "Friendship",
+      "description": "Mutual friendship edge keyed by sorted participant UIDs (uidA_uidB).",
+      "type": "object",
+      "properties": {
+        "participantUids": {
+          "type": "array",
+          "description": "Exact two-element list of mutual friend UIDs."
+        },
+        "participantNames": {
+          "type": "object",
+          "description": "Map of friend UID to display name."
+        },
+        "participantAvatars": {
+          "type": "object",
+          "description": "Optional map of friend UID to compact avatar Base64."
+        },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["participantUids", "participantNames", "createdAt", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "Private user profile documents owned by each authenticated user."
+    },
+    "/friend_codes/{friendCode}": {
+      "schema": { "$ref": "#/entities/FriendCodeEntry" },
+      "description": "Zero-PII personal friend code directory supporting exact-code get lookups only."
+    },
+    "/circles/{circleId}": {
+      "schema": { "$ref": "#/entities/FriendCircle" },
+      "description": "Friends circles keyed by invite code."
+    },
+    "/circle_invites/{inviteId}": {
+      "schema": { "$ref": "#/entities/CircleInvite" },
+      "description": "Direct friend invitations to join a friends circle."
+    },
+    "/circle_posts/{postId}": {
+      "schema": { "$ref": "#/entities/CirclePost" },
+      "description": "Photobooth collages and single photos shared with friends circle members."
+    },
+    "/circle_posts/{postId}/comments/{commentId}": {
+      "schema": { "$ref": "#/entities/PostComment" },
+      "description": "Real-time chat replies on shared circle posts."
+    },
+    "/direct_chats/{chatId}": {
+      "schema": { "$ref": "#/entities/DirectChat" },
+      "description": "Private 1-on-1 friend chat metadata."
+    },
+    "/direct_chats/{chatId}/messages/{messageId}": {
+      "schema": { "$ref": "#/entities/DirectMessage" },
+      "description": "Real-time private messages between two friends."
+    },
+    "/friend_requests/{requestId}": {
+      "schema": { "$ref": "#/entities/FriendRequest" },
+      "description": "Friend requests for the shared Friends feed."
+    },
+    "/friendships/{pairId}": {
+      "schema": { "$ref": "#/entities/Friendship" },
+      "description": "Mutual friendships enabling shared Friends photo visibility."
+    }
+  }
+}
